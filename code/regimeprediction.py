@@ -133,13 +133,13 @@ class regime:
         length = regime.shape[0]
         for i in range(length):
             if (regime.iloc[i,0] < 0) & (regime.iloc[i,1] == 0):
-              regime.iloc[i,2] = 1
-            elif (regime.iloc[i,0] < 0) & (regime.iloc[i,1] == 1):
-              regime.iloc[i,2] = 2
-            elif (regime.iloc[i,0] >= 0) & (regime.iloc[i,1] == 0):
-              regime.iloc[i,2] = 3
-            elif (regime.iloc[i,0] >= 0) & (regime.iloc[i,1] == 1):
               regime.iloc[i,2] = 4
+            elif (regime.iloc[i,0] < 0) & (regime.iloc[i,1] == 1):
+              regime.iloc[i,2] = 3
+            elif (regime.iloc[i,0] >= 0) & (regime.iloc[i,1] == 0):
+              regime.iloc[i,2] = 1
+            elif (regime.iloc[i,0] >= 0) & (regime.iloc[i,1] == 1):
+              regime.iloc[i,2] = 2
 
         regime = regime["2004":]
         regime.to_csv('regime.csv')
