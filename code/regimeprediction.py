@@ -35,7 +35,7 @@ class regime:
 
         return(inf_z)
     
-    def l1trendfiltering(self, lambda_list):
+    def l1trendfiltering_findlambda(self, lambda_list):
         y = self.kospi.to_numpy()
         y = np.log(y)
         n = y.size
