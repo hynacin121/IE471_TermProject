@@ -112,8 +112,8 @@ class regime:
 
         plt.plot(df4)
 
-    def labeling_regime(self):
-        l1 = regime.l1trendfiltering()
+    def labeling_regime(self, lmbda):
+        l1 = regime.l1trendfiltering(lambda)
         inf_z = regime.zscore()
         index_list = []
         for i in range (3, len(l1)):
