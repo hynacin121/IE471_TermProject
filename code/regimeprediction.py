@@ -10,7 +10,7 @@ class regime:
     def __init__(self, dir):
         self.dir = dir
         self.kospi = pd.read_csv(dir + 'data/KOSPI.csv', index_col=0, parse_dates=True)['Adj Close']
-        self.inflation = pd.read_excel(dir + 'data/inflation.csv', index_col= 0)/100
+        self.inflation = pd.read_csv(dir + 'data/inflation.csv', index_col= 0)/100
         self.inflation.index = self.kospi.iloc[1:-3,].index
         self.inflation.columns = ['소비자물가', '농축수산물', '공업제품','집세'	,'공공서비스'	, '개인서비스'	,'근원물가'	,'생활물가']
         
