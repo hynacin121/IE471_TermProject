@@ -34,8 +34,46 @@ class regime:
         inf_z.index = inflation.iloc[48:,].index      
 
         return(inf_z)
+    
+    def l1trendfiltering(self, lambda_list):
+        y = self.kospi.to_numpy()
+        y = np.log(y)
+        n = y.size
+        ones_row = np.ones((1, n))
+        D = sp.sparse.spdiags(np.vstack((ones_row, -2*ones_row, ones_row)), range(3), n-2, n)
+        solver = cp.CVXOPT
+        reg_norm = 2
 
-    def l1trendfiltering(self):
+        fig, ax = plt.subplots(2, 3, figsize=(40,20))
+        ax = ax.ravel()
+
+        ii = 0
+
+        for lambda_value in lambda_list:    
+            x = cp.Variable(shape=n)    
+    
+    # x is the filtered trend that we initialize    
+    
+            objective = cp.Minimize(0.5 * cp.sum_squares(y-x) 
+                  + lambda_value * cp.norm(D@x, reg_norm))    
+    
+    # Note: D@x is syntax for matrix multiplication    
+    
+            problem = cp.Problem(objective)
+            problem.solve(solver=solver, verbose=False)    
+    
+            ax[ii].plot(kospi.index, y, linewidth=1.0, c='b')
+            ax[ii].plot(kospi.index, np.array(x.value), 'b-', linewidth=1.0, c='r')
+            ax[ii].set_xlabel('Time')
+            ax[ii].set_ylabel('Log Premium')
+            ax[ii].set_title('Lambda: {}\nSolver: {}\nObjective Value: {}'.format(lambda_value, problem.status, round(objective.value, 3)))    
+    
+            ii+=1
+    
+        plt.tight_layout()
+        plt.savefig('trend_filtering_L{}.png'.format(reg_norm))
+        plt.show()
+    def l1trendfiltering(self, lambda):
         df = pd.DataFrame(self.kospi)
         df = df.squeeze()
                 
@@ -48,8 +86,8 @@ class regime:
         reg_norm = 2
         x = cp.Variable(shape=n)    
         # x is the filtered trend that we initialize    
-        objective = cp.Minimize(0.5 * cp.sum_squares(y-x) 
-                    + 0.5 * cp.norm(D@x, reg_norm))    
+        objective = cp.Minimize(lambda * cp.sum_squares(y-x) 
+                    + lambda * cp.norm(D@x, reg_norm))    
         # Note: D@x is syntax for matrix multiplication    
         problem = cp.Problem(objective)
         problem.solve(solver=solver, verbose=False)
