@@ -113,8 +113,8 @@ class regime:
         plt.plot(df4)
 
     def labeling_regime(self, lmbda):
-        l1 = regime.l1trendfiltering(lmbda)
-        inf_z = regime.zscore()
+        l1 = self.l1trendfiltering(lmbda)
+        inf_z = self.zscore()
         index_list = []
         for i in range (3, len(l1)):
           if l1['x_value'].values[i] < 0 and l1['x_value'].values[i-1] < 0 and l1['x_value'].values[i-2] < 0 and l1['x_value'].values[i-3] < 0: 
