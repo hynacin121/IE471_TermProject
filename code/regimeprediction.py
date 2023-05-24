@@ -73,7 +73,7 @@ class regime:
         plt.tight_layout()
         plt.savefig('trend_filtering_L{}.png'.format(reg_norm))
         plt.show()
-    def l1trendfiltering(self, lambda):
+    def l1trendfiltering(self, lmbda):
         df = pd.DataFrame(self.kospi)
         df = df.squeeze()
                 
@@ -86,8 +86,8 @@ class regime:
         reg_norm = 2
         x = cp.Variable(shape=n)    
         # x is the filtered trend that we initialize    
-        objective = cp.Minimize(lambda * cp.sum_squares(y-x) 
-                    + lambda * cp.norm(D@x, reg_norm))    
+        objective = cp.Minimize(lmbda * cp.sum_squares(y-x) 
+                    + lmbda * cp.norm(D@x, reg_norm))    
         # Note: D@x is syntax for matrix multiplication    
         problem = cp.Problem(objective)
         problem.solve(solver=solver, verbose=False)
