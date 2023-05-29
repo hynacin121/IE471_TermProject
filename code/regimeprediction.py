@@ -159,6 +159,7 @@ class regime:
     
     
     def preprocess(self):
+        label_regime = self.labeling_regime(1)
         ind = self.indicator
         ind = ind[['재고순환지표(%p)', '경제심리지수(p)',
                     '기계류내수출하지수(%)', '건설수주액(%)', '수출입물가비율(%)',
@@ -169,8 +170,15 @@ class regime:
                     '동행종합지수 순환변동치 전월차(p)', '생산자제품재고지수(전월비)', '소비자물가지수변화율(전월차)(%p)',
                     '소비재수입액(%)', '취업자수(%)', 'CP유통수익률(%p)']]
         train_data = int(len(ind) * 0.8)
-        ind_train = ind[:train_data] 
-        ind_test = ind[train_data:]
+                
+        ind = regime.indicator['2004':]
+        ind.index= label_regime.index
+        ind = pd.concat([ind, label_regime['regime']], axis = 1)
+        
+        ind_x_train = ind[:train_data, :-1] 
+        ind_x_test = ind[train_data:, :-1]
+        ind_y_train=  ind[:train_data, -1] 
+        ind_y_test = ind[train_data:, -1]
 
-        return(ind_train, ind_test)
+        return(ind_x_train, ind_x_test, ind_y_train, ind_y_test)
 
