@@ -245,7 +245,7 @@ class regime:
             print('\n#{0} 교차 검증 accuracy :{1}, 학습 데이터 크기: {2}, 검증 데이터 크기: {3}'
               .format(n_iter, accuracy, train_size, valid_size))
        #print('#{0} 검증 세트 인덱스:{1}'.format(n_iter,valid_index))
-            get_clf_eval(Y_valid, pred=pred_clf, pred_proba=pred_proba_clf)
+            self.get_clf_eval(Y_valid, pred=pred_clf, pred_proba=pred_proba_clf)
 
             cv_accuracy.append(accuracy)
             cv_test_accuracy.append(accuracy_test)
@@ -262,3 +262,9 @@ class regime:
 
         return(pred, clf.feature_importances_)           
 
+    
+    def get_clf_eval(y_test, pred=None, pred_proba=None):
+        confusion = confusion_matrix( y_test, pred)
+        accuracy = accuracy_score(y_test , pred)
+        print('오차 행렬')
+        print(confusion)
