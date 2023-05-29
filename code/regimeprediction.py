@@ -258,7 +258,7 @@ class regime:
 
         pred = clf.predict(x_test)
 
-
+        
 
         return(pred, clf.feature_importances_)           
 
@@ -268,3 +268,14 @@ class regime:
         accuracy = accuracy_score(y_test , pred)
         print('오차 행렬')
         print(confusion)
+       
+    def factor_importance(feature_importances_):
+        ftr_importances_values = feature_importances_
+    # Top 중요도로 정렬을 쉽게 하고, 시본(Seaborn)의 막대그래프로 쉽게 표현하기 위해 Series변환
+        ftr_importances = pd.Series(ftr_importances_values, x_train.columns)
+    # 중요도값 순으로 Series를 정렬, 상위 50개 중요 features 파악 
+        ftr_top50 = ftr_importances.sort_values(ascending=False)
+        plt.figure(figsize=(20,15))
+        plt.title('Feature importances Top 50')
+        sns.barplot(x=ftr_top50 , y = ftr_top50.index)
+        plt.show()    
