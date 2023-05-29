@@ -174,11 +174,15 @@ class regime:
         ind.index= label_regime.index
         
         ind = pd.concat([ind, label_regime['regime']], axis = 1)
-        
-        ind_x_train = ind.iloc[:train_data, :-1] 
-        ind_x_test = ind.iloc[train_data:, :-1]
-        ind_y_train=  ind.iloc[:train_data, -1] 
-        ind_y_test = ind.iloc[train_data:, -1]
+        X = ind.iloc[:, :-1]
+        Y = ind.iloc[:, -1]
+        Y = Y.shift(-1).dropna()
+        df2 = pd.concat([X.iloc[ :-1, : ], Y], axis=1)
+  
+        ind_x_train = df2.iloc[:train_data, :-1]
+        ind_x_test = df2.iloc[train_data:, :-1]
+        ind_y_train=  df2.iloc[:train_data, -1] 
+        ind_y_test = df2.iloc[train_data:, -1]
 
         return(ind_x_train, ind_x_test, ind_y_train, ind_y_test)
 
