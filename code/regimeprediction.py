@@ -108,7 +108,7 @@ class regime:
         return(df_x_value)
 
     def visualization(self):
-        l1 = regime.l1trendfiltering()
+        l1 = self.l1trendfiltering()
         ret = pd.DataFrame(self.kospi.pct_change().dropna()).iloc[:-1, :]
         df2 = pd.concat([ret, l1], axis =1)
         df2.columns = ['KS', 'KS_L1'] 
