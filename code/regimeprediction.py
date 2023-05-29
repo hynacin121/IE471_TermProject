@@ -198,8 +198,8 @@ class regime:
 
         return(ind_x_train, ind_x_test, ind_y_train, ind_y_test)
     
-    def radomforest():
-        X_train, X_test, y_train, y_test = self.preprocess(self):
+    def randomforest(self):
+        x_train, x_test, y_train, y_test = self.preprocess()
     
     #GidSearchCV로 최적 파라미터 찾기 
     
@@ -210,7 +210,7 @@ class regime:
           'min_samples_split' : [2,3,5,10, 15]
             }
 
-         clf = RandomForestClassifier(n_estimators = 100)
+        clf = RandomForestClassifier(n_estimators = 100)
 
         classifier_grid = GridSearchCV(clf, param_grid = grid, scoring="accuracy", n_jobs=-1, verbose =1, cv= 3)
 
@@ -275,13 +275,13 @@ class regime:
         return(pred, clf.feature_importances_)           
 
     
-    def get_clf_eval(y_test, pred=None, pred_proba=None):
+    def get_clf_eval(self, y_test, pred=None, pred_proba=None):
         confusion = confusion_matrix( y_test, pred)
         accuracy = accuracy_score(y_test , pred)
         print('오차 행렬')
         print(confusion)
        
-    def factor_importance(feature_importances_):
+    def factor_importance(self, feature_importances_):
         ftr_importances_values = feature_importances_
     # Top 중요도로 정렬을 쉽게 하고, 시본(Seaborn)의 막대그래프로 쉽게 표현하기 위해 Series변환
         ftr_importances = pd.Series(ftr_importances_values, x_train.columns)
