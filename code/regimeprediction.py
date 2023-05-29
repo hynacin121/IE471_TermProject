@@ -170,9 +170,9 @@ class regime:
                     '동행종합지수 순환변동치 전월차(p)', '생산자제품재고지수(전월비)', '소비자물가지수변화율(전월차)(%p)',
                     '소비재수입액(%)', '취업자수(%)', 'CP유통수익률(%p)']]
         train_data = int(len(ind) * 0.8)
-                
-        ind = regime.indicator['2004':]
+
         ind.index= label_regime.index
+        ind = ind['2004':]
         ind = pd.concat([ind, label_regime['regime']], axis = 1)
         
         ind_x_train = ind[:train_data, :-1] 
