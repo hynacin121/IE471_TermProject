@@ -185,4 +185,80 @@ class regime:
         ind_y_test = df2.iloc[train_data:, -1]
 
         return(ind_x_train, ind_x_test, ind_y_train, ind_y_test)
+    
+    def radomforest():
+        X_train, X_test, y_train, y_test = self.preprocess(self):
+    
+    #GidSearchCV로 최적 파라미터 찾기 
+    
+        grid = {
+          'n_estimators' : [100,200, 300],
+          'max_depth' : [6,8,10,12, 15],
+          'min_samples_leaf' : [3,5,7,10, 15],
+          'min_samples_split' : [2,3,5,10, 15]
+            }
+
+         clf = RandomForestClassifier(n_estimators = 100)
+
+        classifier_grid = GridSearchCV(clf, param_grid = grid, scoring="accuracy", n_jobs=-1, verbose =1, cv= 3)
+
+        classifier_grid.fit(X_train, y_train)
+
+        print("최고 평균 정확도 : {}".format(classifier_grid.best_score_))
+        print("최고의 파라미터 :", classifier_grid.best_params_)
+
+        scores_df = pd.DataFrame(classifier_grid.cv_results_)
+        pred = classifier_grid.predict(X_test)
+    
+    # 최고의 파라미터 : {'max_depth': 8, 'min_samples_leaf': 15, 'min_samples_split': 15, 'n_estimators': 100}
+    #최고 파라미터로 Classifier Setting 
+    
+        clf = RandomForestClassifier(max_depth =  8, min_samples_leaf= 15, min_samples_split= 2, n_estimators= 100)
+    
+    # Kfold로 fold=5 교차검증 진행
+        kfold = KFold(n_splits=5, shuffle=False)
+        cv_accuracy = []
+        fold_result = []
+        cv_test_accuracy =[]
+        n_iter = 0
+
+        for train_index, valid_index in kfold.split(x_train):
+            #print("TRAIN:", train_index, "TEST:", valid_index)
+            X_train, X_valid = x_train.iloc[train_index,:], x_train.iloc[valid_index,:]
+            Y_train, Y_valid = y_train.iloc[train_index], y_train[valid_index]
+
+        #학습 및 예측 
+            clf.fit(X_train , Y_train)    
+            pred_clf = clf.predict(X_valid)
+            pred_proba_clf = clf.predict_proba(X_valid)[:, 1]
+            n_iter += 1
+            fold_result.append(clf)
+
+            pred_clf_test = clf.predict(x_test)
+
+
+        # 반복 시 마다 정확도 측정 
+            accuracy = accuracy_score(Y_valid, pred_clf)
+            accuracy_test = accuracy_score(y_test, pred_clf_test)
+            train_size = X_train.shape[0]
+            valid_size = X_valid.shape[0]
+            print('\n#{0} 교차 검증 accuracy :{1}, 학습 데이터 크기: {2}, 검증 데이터 크기: {3}'
+              .format(n_iter, accuracy, train_size, valid_size))
+       #print('#{0} 검증 세트 인덱스:{1}'.format(n_iter,valid_index))
+            get_clf_eval(Y_valid, pred=pred_clf, pred_proba=pred_proba_clf)
+
+            cv_accuracy.append(accuracy)
+            cv_test_accuracy.append(accuracy_test)
+
+        #print('test_set_accuracy', accuracy_test)
+
+    # 개별 iteration별 정확도를 합하여 평균 정확도 계산 
+        print('\n## 평균 검증 accuracy:', np.mean(cv_accuracy)) 
+        print('\n## 평균 test accuracy:', np.mean(cv_test_accuracy)) 
+
+        pred = clf.predict(x_test)
+
+
+
+        return(pred, clf.feature_importances_)           
 
