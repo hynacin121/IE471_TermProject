@@ -13,7 +13,7 @@ class regime:
         self.inflation = pd.read_csv(dir + 'data/inflation.csv', index_col= 0)/100
         self.inflation.index = self.kospi.iloc[1:-3,].index
         self.inflation.columns = ['소비자물가', '농축수산물', '공업제품','집세'	,'공공서비스'	, '개인서비스'	,'근원물가'	,'생활물가']
-        self.indicator = pd.read_csv(dir + 'data/indicator.csv', index_col = 0, parse_dates= True, encoding='cp949')
+        self.indicator = pd.read_csv(dir + 'data/indicator.csv', index_col = 0, parse_dates= True)
         self.indicator.columns =  ['선행종합지수', '재고순환지표(%p)', '경제심리지수(p)',
                                     '기계류내수출하지수(%)', '건설수주액(%)', '수출입물가비율(%)',
                                     '코스피(%)', '장단기금리차(%p)', '선행종합지수 순환변동치 전월차(p)', '선행지수 전년동월비(%)',
