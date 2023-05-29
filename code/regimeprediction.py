@@ -214,13 +214,13 @@ class regime:
 
         classifier_grid = GridSearchCV(clf, param_grid = grid, scoring="accuracy", n_jobs=-1, verbose =1, cv= 3)
 
-        classifier_grid.fit(X_train, y_train)
+        classifier_grid.fit(x_train, y_train)
 
         print("최고 평균 정확도 : {}".format(classifier_grid.best_score_))
         print("최고의 파라미터 :", classifier_grid.best_params_)
 
         scores_df = pd.DataFrame(classifier_grid.cv_results_)
-        pred = classifier_grid.predict(X_test)
+        pred = classifier_grid.predict(x_test)
     
     # 최고의 파라미터 : {'max_depth': 8, 'min_samples_leaf': 15, 'min_samples_split': 15, 'n_estimators': 100}
     #최고 파라미터로 Classifier Setting 
