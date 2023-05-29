@@ -9,10 +9,20 @@ class regime:
 
     def __init__(self, dir):
         self.dir = dir
-        self.kospi = pd.read_csv(dir + 'data/KOSPI.csv', index_col=0, parse_dates=True)['Adj Close']
-        self.inflation = pd.read_csv(dir + 'data/inflation.csv', index_col= 0)/100
+        self.kospi = pd.read_csv(dir + 'KOSPI.csv', index_col=0, parse_dates=True)['Adj Close']
+        self.inflation = pd.read_excel(dir + '물가상승률.xlsx', index_col= 0).iloc[:-2,:].astype(float)/100
         self.inflation.index = self.kospi.iloc[1:-3,].index
         self.inflation.columns = ['소비자물가', '농축수산물', '공업제품','집세'	,'공공서비스'	, '개인서비스'	,'근원물가'	,'생활물가']
+        self.indicator = pd.read_csv(dir + '경기선후행지수.csv', index_col = 0, parse_dates= True, encoding='cp949')
+        self.indicator.columns =  ['선행종합지수', '재고순환지표(%p)', '경제심리지수(p)',
+                                    '기계류내수출하지수(%)', '건설수주액(%)', '수출입물가비율(%)',
+                                    '코스피(%)', '장단기금리차(%p)', '선행종합지수 순환변동치 전월차(p)', '선행지수 전년동월비(%)',
+                                    '선행종합지수 전년동월비 전월차(%p)', '동행종합지수', '동행종합지수 전월비(%)',
+                                    '광공업생산지수(%)', '서비스업생산지수(%)', '건설기성액(%)',
+                                    '소매판매액지수(%)', '내수출하지수(%)', '수입액(%)', '비농림어업취업자수(%)',
+                                    '동행종합지수 순환변동치 전월차(p)', '생산자제품재고지수(전월비)', '소비자물가지수변화율(전월차)(%p)',
+                                    '소비재수입액(%)', '취업자수(%)', 'CP유통수익률(%p)']
+
         
     def zscore(self):
         inf2 = self.inflation.copy()
