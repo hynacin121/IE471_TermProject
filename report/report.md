@@ -3,12 +3,14 @@ In economic literature, the analysis of regime in time series data focuses on th
 The regime cycle, which incorporates both the business cycle and inflation variables, is based on the directionality of each indicator. For example, the Expansion regime refers to a period when the economy is expanding and inflation is rising. The summarized information can be presented in the following table:
 
 <p align ='center'>
+  
 |Regime |Business|Inflation|
 |------|---|---|
 |Recovery|+|-|
 |Expansion|+|+|
 |Slowdown|-|+|
 |Contraction|-|-|
+  
 </p>
 
 To determine the regimes, two indicators were used.[Uysal and Mulvey, 2021 and Kim, 2022] The business indicator utilized the fluctuations in the KOSPI index, while the inflation indicator was based on the monthly consumer price inflation rate. The z-score of the inflation rate, calculated based on the past four years, was employed.
@@ -32,6 +34,7 @@ Based on the previously explained KOSPI index and consumer price index, the regi
 
 
 <p align ='center'>
+  
 |Date|inflation|stock|	regime|
 |------|---|---|---|
 |2004-01|0.2722|1.0|	2
@@ -39,6 +42,7 @@ Based on the previously explained KOSPI index and consumer price index, the regi
 |2004-03|-0.1283|-1.0|	4
 |2004-04|0.0773|-1.0|	1
 |2004-05|0.0331|-1.0|	1
+  
 </p>
 
 
