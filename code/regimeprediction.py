@@ -11,7 +11,7 @@ import statsmodels.api as sm
 from sklearn.model_selection import KFold
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
-
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.model_selection import GridSearchCV
 from datetime import datetime, timedelta
@@ -173,34 +173,23 @@ class regime:
     def preprocess(self):
         label_regime = self.labeling_regime(1)
         ind = self.indicator
-        ind = ind[['재고순환지표(%p)', '경제심리지수(p)',
-                    '기계류내수출하지수(%)', '건설수주액(%)', '수출입물가비율(%)',
-                    '코스피(%)', '장단기금리차(%p)', '선행종합지수 순환변동치 전월차(p)', '선행지수 전년동월비(%)',
-                    '동행종합지수 전월비(%)',
-                    '광공업생산지수(%)', '서비스업생산지수(%)', '건설기성액(%)',
-                    '소매판매액지수(%)', '내수출하지수(%)', '수입액(%)', '비농림어업취업자수(%)',
-                    '동행종합지수 순환변동치 전월차(p)', '생산자제품재고지수(전월비)', '소비자물가지수변화율(전월차)(%p)',
-                    '소비재수입액(%)', '취업자수(%)', 'CP유통수익률(%p)']]
         train_data = int(len(ind) * 0.8)
         ind = ind['2004':]
         ind.index= label_regime.index
-        
-        ind = pd.concat([ind, label_regime['regime']], axis = 1)
+     
+        ind = pd.concat([ind, label_regime[['소비자물가', 'regime']]], axis = 1)
         X = ind.iloc[:, :-1]
         Y = ind.iloc[:, -1]
         Y = Y.shift(-1).dropna()
         df2 = pd.concat([X.iloc[ :-1, : ], Y], axis=1)
-  
-        ind_x_train = df2.iloc[:train_data, :-1]
-        ind_x_test = df2.iloc[train_data:, :-1]
-        ind_y_train=  df2.iloc[:train_data, -1] 
-        ind_y_test = df2.iloc[train_data:, -1]
-
-        return(ind_x_train, ind_x_test, ind_y_train, ind_y_test)
+        X = df2.iloc[:, :-1]
+        Y = df2.iloc[:, -1]
+        
+        return(train_test_split(X, Y, test_size = 0.2, random_state =42))
     
     def randomforest(self):
         x_train, x_test, y_train, y_test = self.preprocess()
-    
+        self.x_train = x_train
     #GidSearchCV로 최적 파라미터 찾기 
     
         grid = {
@@ -221,11 +210,17 @@ class regime:
 
         scores_df = pd.DataFrame(classifier_grid.cv_results_)
         pred = classifier_grid.predict(x_test)
+
+
+        max_depth = classifier_grid.best_params_['max_depth']
+        min_samples_leaf = classifier_grid.best_params_['min_samples_leaf']
+        min_samples_split = classifier_grid.best_params_['min_samples_split']
+        n_estimators = classifier_grid.best_params_['n_estimators']
     
-    # 최고의 파라미터 : {'max_depth': 8, 'min_samples_leaf': 15, 'min_samples_split': 15, 'n_estimators': 100}
-    #최고 파라미터로 Classifier Setting 
+        #최고 파라미터로 Classifier Setting 
     
-        clf = RandomForestClassifier(max_depth =  8, min_samples_leaf= 15, min_samples_split= 2, n_estimators= 100)
+        clf = RandomForestClassifier(max_depth = max_depth, min_samples_leaf= min_samples_leaf, 
+                                      min_samples_split= min_samples_split, n_estimators= n_estimators)
     
     # Kfold로 fold=5 교차검증 진행
         kfold = KFold(n_splits=5, shuffle=False)
@@ -284,7 +279,7 @@ class regime:
     def factor_importance(self, feature_importances_):
         ftr_importances_values = feature_importances_
     # Top 중요도로 정렬을 쉽게 하고, 시본(Seaborn)의 막대그래프로 쉽게 표현하기 위해 Series변환
-        ftr_importances = pd.Series(ftr_importances_values, x_train.columns)
+        ftr_importances = pd.Series(ftr_importances_values, self.x_train.columns)
     # 중요도값 순으로 Series를 정렬, 상위 50개 중요 features 파악 
         ftr_top50 = ftr_importances.sort_values(ascending=False)
         plt.figure(figsize=(20,15))
