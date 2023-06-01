@@ -184,7 +184,7 @@ class regime:
         df2 = pd.concat([X.iloc[ :-1, : ], Y], axis=1)
         X = df2.iloc[:, :-1]
         Y = df2.iloc[:, -1]
-        
+        self.x_test2 = X["2022":]
         return(train_test_split(X, Y, test_size = 0.2, random_state =42))
     
     def randomforest(self):
@@ -264,10 +264,11 @@ class regime:
         print('\n## 평균 test accuracy:', np.mean(cv_test_accuracy)) 
 
         pred = clf.predict(x_test)
+        pred2 = clf.predict(self.x_test2)
 
         
 
-        return(pred, clf.feature_importances_)           
+        return(pred, pred2, clf.feature_importances_)           
 
     
     def get_clf_eval(self, y_test, pred=None, pred_proba=None):
